@@ -4,46 +4,40 @@ import { LoginFormComponent } from './shared/components';
 import { AuthGuardService } from './shared/services';
 import { HomeComponent } from './pages/home/home.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { TasksComponent } from './pages/tasks/tasks.component';
-import { DxDataGridModule, DxFormModule } from 'devextreme-angular';
+import { DxFormModule } from 'devextreme-angular';
 
 const routes: Routes = [
   {
-    path: 'tasks',
-    component: TasksComponent,
-    canActivate: [ AuthGuardService ]
+    path: 'data-book',
+    loadChildren: () =>
+      import('./pages/data-book/data-book.module').then((m) => m.DataBookModule),
+    canActivate: [AuthGuardService],
   },
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [AuthGuardService],
   },
   {
     path: 'home',
     component: HomeComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [AuthGuardService],
   },
   {
     path: 'login-form',
     component: LoginFormComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [AuthGuardService],
   },
   {
     path: '**',
-    redirectTo: 'home'
-  }
+    redirectTo: 'home',
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), DxDataGridModule, DxFormModule],
+  imports: [RouterModule.forRoot(routes), DxFormModule],
   exports: [RouterModule],
-  providers: [
-    AuthGuardService
-  ],
-  declarations: [
-    HomeComponent,
-    ProfileComponent,
-    TasksComponent
-  ]
+  providers: [AuthGuardService],
+  declarations: [HomeComponent, ProfileComponent],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

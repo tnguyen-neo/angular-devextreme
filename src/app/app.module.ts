@@ -33,7 +33,7 @@ import { HttpClientModule } from '@angular/common/http';
     ChangePasswordFormModule,
     LoginFormModule,
     UnauthenticatedContentModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [AuthService, ScreenService, AppInfoService],
   bootstrap: [AppComponent],

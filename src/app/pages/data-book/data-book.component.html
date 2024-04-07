@@ -1,4 +1,4 @@
-<h2 class="content-block">Tasks</h2>
+<h2 class="content-block">Data Book</h2>
 
 <dx-data-grid
   class="dx-card wide-card"
@@ -9,6 +9,9 @@
   [focusedRowIndex]="0"
   [columnAutoWidth]="true"
   [columnHidingEnabled]="true"
+  (onSelectionChanged)="onSelectionChanged($event)"
+  (onRowInserted)="onRowInserted($event)"
+  (onRowUpdated)="onRowUpdated($event)"
 >
   <dxo-paging [pageSize]="10"></dxo-paging>
   <dxo-pager [showPageSizeSelector]="true" [showInfo]="true"></dxo-pager>
@@ -19,6 +22,8 @@
     [allowAdding]="true"
     [allowDeleting]="true"
   ></dxo-editing>
+
+  <dxo-selection mode="multiple"></dxo-selection>
 
   <dxi-column dataField="name" caption="Name" [hidingPriority]="3">
   </dxi-column>
@@ -33,4 +38,17 @@
 
   <dxi-column dataField="country" [hidingPriority]="2"> </dxi-column>
   <dxi-column dataField="city" [hidingPriority]="2"> </dxi-column>
+
+  <dxo-toolbar>
+    <dxi-item name="addRowButton" showText="always"> </dxi-item>
+    <dxi-item location="after">
+      <dx-button
+        (onClick)="deleteRecords()"
+        [disabled]="!selectedItemKeys.length"
+        icon="trash"
+        text="Delete Selected Records"
+      >
+      </dx-button>
+    </dxi-item>
+  </dxo-toolbar>
 </dx-data-grid>
