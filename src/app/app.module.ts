@@ -3,15 +3,24 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SideNavOuterToolbarModule, SideNavInnerToolbarModule, SingleCardModule } from './layouts';
-import { FooterModule, ResetPasswordFormModule, CreateAccountFormModule, ChangePasswordFormModule, LoginFormModule } from './shared/components';
+import {
+  SideNavOuterToolbarModule,
+  SideNavInnerToolbarModule,
+  SingleCardModule,
+} from './layouts';
+import {
+  FooterModule,
+  ResetPasswordFormModule,
+  CreateAccountFormModule,
+  ChangePasswordFormModule,
+  LoginFormModule,
+} from './shared/components';
 import { AuthService, ScreenService, AppInfoService } from './shared/services';
 import { UnauthenticatedContentModule } from './unauthenticated-content';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -23,13 +32,10 @@ import { UnauthenticatedContentModule } from './unauthenticated-content';
     CreateAccountFormModule,
     ChangePasswordFormModule,
     LoginFormModule,
-    UnauthenticatedContentModule
+    UnauthenticatedContentModule,
+    HttpClientModule
   ],
-  providers: [
-    AuthService,
-    ScreenService,
-    AppInfoService
-  ],
-  bootstrap: [AppComponent]
+  providers: [AuthService, ScreenService, AppInfoService],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

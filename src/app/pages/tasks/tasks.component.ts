@@ -1,39 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import 'devextreme/data/odata/store';
+import { TasksService } from './tasks.service';
+import { TasksData } from './models/data';
 
 @Component({
-  templateUrl: 'tasks.component.html'
+  templateUrl: 'tasks.component.html',
 })
-
 export class TasksComponent {
-  dataSource: any;
-  priority: any[];
+  task$ = inject(TasksService);
+  dataSource: any = TasksData;
 
-  constructor() {
-    this.dataSource = {
-      store: {
-        version: 2,
-        type: 'odata',
-        key: 'Task_ID',
-        url: 'https://js.devexpress.com/Demos/DevAV/odata/Tasks'
-      },
-      expand: 'ResponsibleEmployee',
-      select: [
-        'Task_ID',
-        'Task_Subject',
-        'Task_Start_Date',
-        'Task_Due_Date',
-        'Task_Status',
-        'Task_Priority',
-        'Task_Completion',
-        'ResponsibleEmployee/Employee_Full_Name'
-      ]
-    };
-    this.priority = [
-      { name: 'High', value: 4 },
-      { name: 'Urgent', value: 3 },
-      { name: 'Normal', value: 2 },
-      { name: 'Low', value: 1 }
-    ];
+  constructor() {}
+
+  showInfo(a: any) {
+    console.log(a);
+    return '123';
+  }
+
+  getImageUrl(data: any) {
+    return data.data.avatar;
   }
 }
