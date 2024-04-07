@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { TasksData } from './models/data';
+import { DataBooks } from './models/data';
 import { DataBook } from './models/data-book.type';
 
 @Injectable({
@@ -10,32 +10,53 @@ import { DataBook } from './models/data-book.type';
 export class DataBookService {
   http: HttpClient = inject(HttpClient);
   api: string = 'https://661103a40640280f219def0f.mockapi.io/address-book';
-  TasksData: any[] = TasksData;
+  data: DataBook[] = DataBooks;
+
+  private dataBookSubject: BehaviorSubject<DataBook[]> = new BehaviorSubject<
+    DataBook[]
+  >(this.getData());
+  dataBook$: Observable<DataBook[]> = this.dataBookSubject.asObservable();
 
   constructor() {}
 
-  getData(): Observable<DataBook[]> {
-    const data = this.TasksData.filter((task: DataBook) => !task?.deleted);
-    return of(data);
+  emitData() {
+    const data = this.getData();
+    console.log(data);
+    this.dataBookSubject.next(data);
   }
 
-  remove(id: string[] | number[]) {
-    id.forEach((id: string | number) => {
-      const task = this.TasksData.find((t) => t.id === id);
-      task.deleted = true;
-    });
+  getData() {
+    const data = this.data.filter((dataBook: DataBook) => !dataBook?.deleted);
+    return data;
   }
 
   add(data: DataBook) {
     const task = {
       ...data,
-      id: this.TasksData.length + 1,
+      id: this.data.length + 1,
     };
-    this.TasksData.push(task);
+    this.data.push(task);
+    this.emitData();
   }
 
   edit(data: DataBook) {
-    const index = this.TasksData.indexOf((t: DataBook) => t.id === data.id);
-    TasksData.splice(index, 1, data);
+    const dataBook = this.data.find((t: DataBook) => t.id === data.id);
+    const index = (dataBook && this.data.indexOf(dataBook)) || -1;
+    index >= 0 && DataBooks.splice(index, 1, data);
+    this.emitData();
+  }
+
+  remove(id: string | number) {
+    const dataBook = this.data.find((db) => db.id == id);
+    dataBook && (dataBook.deleted = true);
+    this.emitData();
+  }
+
+  removeMany(id: string[] | number[]) {
+    id.forEach((id: string | number) => {
+      const dataBook = this.data.find((db) => db.id == id);
+      dataBook && (dataBook.deleted = true);
+    });
+    this.emitData();
   }
 }

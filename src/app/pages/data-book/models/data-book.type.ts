@@ -5,5 +5,5 @@ export type DataBook = {
   country: string;
   city: string;
   createdAt: string;
-  deleted: boolean;
+  deleted?: boolean;
 };

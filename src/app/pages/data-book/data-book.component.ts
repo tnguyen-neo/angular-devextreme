@@ -1,24 +1,33 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import 'devextreme/data/odata/store';
 import { DataBookService } from './data-book.service';
 import { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
 import { DataBook } from './models/data-book.type';
+import { Subscription } from 'rxjs';
 
 @Component({
   templateUrl: 'data-book.component.html',
 })
-export class DataBookComponent {
-  dataBook$ = inject(DataBookService);
+export class DataBookComponent implements OnDestroy {
+  dbService = inject(DataBookService);
 
   dataSource: DataBook[] = [];
   selectedItemKeys: string[] = [];
 
-  constructor() {
-    this.fetchData();
+  dataSubscription?: Subscription;
+
+  constructor() {}
+
+  ngOnInit() {
+    this.dataSubscription = this.fetchData();
   }
 
-  fetchData() {
-    this.dataBook$.getData().subscribe({
+  ngOnDestroy() {
+    this.dataSubscription && this.dataSubscription.unsubscribe();
+  }
+
+  fetchData(): Subscription {
+    return this.dbService.dataBook$.subscribe({
       next: (data: DataBook[]) => {
         this.dataSource = data;
       },
@@ -30,8 +39,8 @@ export class DataBookComponent {
   }
 
   deleteRecords() {
-    this.dataBook$.remove(this.selectedItemKeys);
-    this.fetchData();
+    this.dbService.removeMany(this.selectedItemKeys);
+    this.selectedItemKeys = [];
   }
 
   onSelectionChanged({
@@ -41,10 +50,14 @@ export class DataBookComponent {
   }
 
   onRowInserted(event: any) {
-    this.dataBook$.add(event.data);
+    this.dbService.add(event.data);
   }
 
   onRowUpdated(event: any) {
-    this.dataBook$.edit(event.data);
+    this.dbService.edit(event.data);
+  }
+
+  onRowRemoved(event: any) {
+    this.dbService.remove(event.data.id);
   }
 }

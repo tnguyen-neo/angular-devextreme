@@ -1,4 +1,6 @@
-export const TasksData = [
+import { DataBook } from "./data-book.type";
+
+export const DataBooks: DataBook[] = [
   {
     createdAt: '2024-04-05T15:28:22.467Z',
     name: 'Henrietta Balistreri',
