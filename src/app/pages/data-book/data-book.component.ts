@@ -15,23 +15,25 @@ export class DataBookComponent implements OnDestroy {
   selectedItemKeys: string[] = [];
 
   dataSubscription?: Subscription;
+  broadcastSubscription?: Subscription;
 
   constructor() {}
 
   ngOnInit() {
     this.dataSubscription = this.fetchData();
+    this.dataSource = this.dbService.getData();
   }
 
   ngOnDestroy() {
     this.dataSubscription && this.dataSubscription.unsubscribe();
+    this.broadcastSubscription && this.broadcastSubscription.unsubscribe();
   }
 
   fetchData(): Subscription {
-    return this.dbService.dataBook$.subscribe({
-      next: (data: DataBook[]) => {
-        this.dataSource = data;
-      },
-    });
+    const subscriber = (data: DataBook[]) => {
+      this.dataSource = data;
+    };
+    return this.dbService.subscribe('data', subscriber);
   }
 
   getImageUrl(data: any) {

@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, Subject, Subscription, filter, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { DataBooks } from './models/data';
 import { DataBook } from './models/data-book.type';
+import { Message } from './models/message';
 
 @Injectable({
   providedIn: 'root',
@@ -12,20 +13,30 @@ export class DataBookService {
   api: string = 'https://661103a40640280f219def0f.mockapi.io/address-book';
   data: DataBook[] = DataBooks;
 
-  private dataBookSubject: BehaviorSubject<DataBook[]> = new BehaviorSubject<
-    DataBook[]
-  >(this.getData());
-  dataBook$: Observable<DataBook[]> = this.dataBookSubject.asObservable();
+  private _dataBook$: Subject<Message> = new Subject<Message>();
+  dataBook$: Observable<Message> = this._dataBook$.asObservable();
 
   constructor() {}
 
-  emitData() {
-    const data = this.getData();
-    console.log(data);
-    this.dataBookSubject.next(data);
+  broadcast(type: string, payload: any = null) {
+    this._dataBook$.next({ type, payload });
   }
 
-  getData() {
+  subscribe(type: string, callback: (payload: any) => void): Subscription {
+    return this._dataBook$
+      .pipe(
+        filter((message: Message) => message.type === type),
+        map((message: Message) => message.payload)
+      )
+      .subscribe(callback);
+  }
+
+  emitData() {
+    const data = this.getData();
+    this.broadcast('data', data);
+  }
+
+  getData(): DataBook[] {
     const data = this.data.filter((dataBook: DataBook) => !dataBook?.deleted);
     return data;
   }
